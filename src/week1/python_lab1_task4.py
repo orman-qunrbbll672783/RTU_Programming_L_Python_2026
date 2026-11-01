@@ -57,30 +57,60 @@ Examples (these are also used to check your work):
 
 def count_characters(text: str) -> int:
     """Count characters that are not whitespace."""
-    # TODO: implement
-    raise NotImplementedError("count_characters() is not implemented yet")
+    count = 0
+    for ch in text:
+        if not ch.isspace():
+            count += 1
+    return count
 
 
 def count_words(text: str) -> int:
     """Count number of whitespace-separated words."""
-    # TODO: implement
-    raise NotImplementedError("count_words() is not implemented yet")
+    return len(text.split())
+
+
+def _is_integer_word(word: str) -> bool:
+    """Return True if word is a whole integer with an optional leading minus."""
+    digits = word[1:] if word.startswith("-") else word
+    # isascii() rules out characters like "²" that isdigit() accepts
+    # but int() cannot convert.
+    return digits != "" and digits.isascii() and digits.isdigit()
 
 
 def extract_numbers(text: str) -> list[int]:
     """Return a list of the integers found in text, in order."""
-    # TODO: implement
-    raise NotImplementedError("extract_numbers() is not implemented yet")
+    numbers = []
+    for word in text.split():
+        cleaned = word.rstrip(".,!?;:")
+        if _is_integer_word(cleaned):
+            numbers.append(int(cleaned))
+    return numbers
 
 
 def analyze_text(text: str) -> dict:
     """Return a dict with characters, words, numbers, sum and average."""
-    # TODO: call the helper functions and compute sum and average
-    raise NotImplementedError("analyze_text() is not implemented yet")
+    numbers = extract_numbers(text)
+    total = sum(numbers)
+    if numbers:
+        average = total / len(numbers)
+    else:
+        average = 0.0
+    return {
+        "characters": count_characters(text),
+        "words": count_words(text),
+        "numbers": numbers,
+        "sum": total,
+        "average": average,
+    }
 
 
 if __name__ == "__main__":
     # Keep all input() calls inside this block, otherwise the autograder
     # cannot import your file.
-    # TODO: read input, call analyze_text(), and print results
-    pass
+    line = input("Enter text: ")
+    result = analyze_text(line)
+    print(f"Characters (no spaces): {result['characters']}")
+    print(f"Words: {result['words']}")
+    print(f"Numbers: {result['numbers']}")
+    print(f"Sum: {result['sum']}")
+    print(f"Average: {result['average']:.2f}")
